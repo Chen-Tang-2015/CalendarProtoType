@@ -1,0 +1,68 @@
+﻿@model IEnumerable<CalendarWebAppPrototype.Models.EventMessage>
+
+@{
+    ViewBag.Title = "MeetingInvitation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Calendar Prototype</h2>
+
+@if (ViewBag.ErrorMessage == "AuthorizationRequired")
+{
+    <p>Failed to read your contacts. Click @Html.ActionLink("here", "RefreshSession", "Account", new { redirect = "Calendar" }, null) to sign-in or @Html.ActionLink("here", "ConsentApp", "Account", new { redirect = "Calendar", resource = ViewBag.ResourceId }, null) to consent the app and try again.</p>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Subject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sender.EmailAddress.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sender.EmailAddress.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BodyPreview)
+            </th>                  
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sender.EmailAddress.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sender.EmailAddress.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BodyPreview)
+                </td>
+                <td>
+                    @Html.ActionLink("Accept", "Events", "Calendar", new { nextLink = ViewData["nextLink"] }, null)
+                </td>
+                <td>
+                    @Html.ActionLink("Tentatively Accept", "Events", "Calendar", new { nextLink = ViewData["nextLink"] }, null)
+                </td>
+                <td>
+                    @Html.ActionLink("Deny", "Calendar", new { nextLink = ViewData["nextLink"] }, null)
+                </td>
+            </tr>
+        }
+
+
+    </table>
+    if (!string.IsNullOrEmpty((string)ViewData["nextLink"]))
+    {
+        @Html.ActionLink("Next page", "Events", "Calendar", new { nextLink = ViewData["nextLink"] }, null);
+    }
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+}
